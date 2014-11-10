@@ -17,6 +17,7 @@
 
 import os
 import twitter
+import plistlib
 
 from autopkglib import Processor, ProcessorError
 
@@ -42,6 +43,8 @@ class TweetChanges(Processor):
 
     __doc__ = description
 
+    app_versions = 'app_versions.plist'
+
 
     def load_app_keys(self):
         """Load app keys from a file on disk"""
@@ -50,6 +53,28 @@ class TweetChanges(Processor):
             credentials = [x.strip().split(':') for x in f.readlines()]
 
         return credentials[0]
+
+
+    def load_app_versions(self):
+        if os.path.isfile(self.app_versions):
+            versions = plistlib.readPlist(self.app_versions)
+
+        return versions
+
+
+    def get_previous_app_version(self, app_name):
+        app_history = self.load_app_versions()
+        if app_history[app_name]:
+            return app_history[app_name]
+        else:
+            return False
+
+
+    def store_app_version(self, app_name, version):
+        app_history = self.load_app_versions()
+        app_history.update({app_name: version})
+        plistlib.writePlist(app_history, self.app_versions)
+
 
     def tweet(self, app_name, version):
         MY_TWITTER_CREDS = os.path.expanduser('~/.twitter_oauth')
@@ -62,17 +87,25 @@ class TweetChanges(Processor):
         twitter_instance = twitter.Twitter(auth=twitter.OAuth(
             oauth_token, oauth_secret, CONSUMER_KEY, CONSUMER_SECRET))
         # Now work with Twitter
-        twitter_instance.statuses.update(status="%s version %s has been released" % (app_name, version))
+        #twitter_instance.statuses.update(status="%s version %s has been released" % (app_name, version))
 
     def main(self):
         # Determine product_name, release, locale, and base_url.
         app_name = self.env["app_name"]
         version = self.env["version"]
-        try:
-            self.tweet(app_name, version)
-            self.output("Tweeted %s has been updated to %s" % (self.env["app_name"], self.env["version"]))
-        except:
-            self.output("Duplicate Tweet or Failed for another reason")
+
+        previous_version = get_previous_app_version(app_name)
+
+        if version > previous_version:
+            self.output("%s is newer than %s, saving version and sending tweet" % app_name, version)
+            self.store_app_version(app_name, version)
+            try:
+                self.tweet(app_name, version)
+                self.output("Tweeted %s has been updated to %s" % (self.env["app_name"], self.env["version"]))
+            except:
+                self.output("Duplicate Tweet or Failed for another reason")
+        else:
+            self.output("%s is not newer than %s" % version, previous_version)
 
 
 if __name__ == "__main__":
