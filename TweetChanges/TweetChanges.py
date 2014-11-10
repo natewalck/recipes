@@ -99,7 +99,7 @@ class TweetChanges(Processor):
         previous_version = self.get_previous_app_version(app_name)
 
         if previous_version and version > previous_version:
-            self.output("%s is newer than %s, saving version and sending tweet" % app_name, version)
+            self.output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
             self.store_app_version(app_name, version)
             try:
                 self.tweet(app_name, version)
@@ -107,7 +107,7 @@ class TweetChanges(Processor):
             except:
                 self.output("Duplicate Tweet or Failed for another reason")
         else:
-            self.output("%s is not newer than %s" % version, previous_version)
+            self.output("%s is not newer than %s" % (version, previous_version))
 
 
 if __name__ == "__main__":
