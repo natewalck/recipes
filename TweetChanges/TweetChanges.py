@@ -94,7 +94,7 @@ class TweetChanges(Processor):
         app_name = self.env["app_name"]
         version = self.env["version"]
 
-        previous_version = get_previous_app_version(app_name)
+        previous_version = self.get_previous_app_version(app_name)
 
         if version > previous_version:
             self.output("%s is newer than %s, saving version and sending tweet" % app_name, version)
