@@ -58,6 +58,8 @@ class TweetChanges(Processor):
     def load_app_versions(self):
         if os.path.isfile(self.app_versions):
             versions = plistlib.readPlist(self.app_versions)
+        else:
+            versions = None
 
         return versions
 
