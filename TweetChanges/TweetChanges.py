@@ -74,8 +74,12 @@ class TweetChanges(Processor):
 
     def store_app_version(self, app_name, version):
         app_history = self.load_app_versions()
-        app_history.update({app_name: version})
-        plistlib.writePlist(app_history, self.app_versions)
+        if app_history:
+            app_history.update({app_name: version})
+            plistlib.writePlist(app_history, self.app_versions)
+        else:
+            app_history = {app_name: version}
+            plistlib.writePlist(app_history, self.app_versions)
 
 
     def tweet(self, app_name, version):
