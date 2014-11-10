@@ -42,10 +42,18 @@ class TweetChanges(Processor):
 
     __doc__ = description
 
+
+    def load_app_keys():
+        """Load app keys from a file on disk"""
+        with open ('~/.twitter_app_keys') as f:
+            credentials = [x.strip().split(':') for x in f.readlines()]
+
+        return credentials[0]
+
     def tweet(self, app_name, version):
-        CONSUMER_KEY = 'ENTER_KEY_HERE'
-        CONSUMER_SECRET = 'ENTER_SECRET_HERE'
         MY_TWITTER_CREDS = os.path.expanduser('~/.twitter_oauth')
+        CONSUMER_KEY, CONSUMER_SECRET = load_app_keys()
+
         if not os.path.exists(MY_TWITTER_CREDS):
             twitter.oauth_dance("autopkgsays", CONSUMER_KEY, CONSUMER_SECRET,
                         MY_TWITTER_CREDS)
