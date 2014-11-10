@@ -35,7 +35,7 @@
                 <string>%version%</string>
             </dict>
             <key>Processor</key>
-            <string>TweetChanges</string>
+            <string>com.github.natewalck.recipes.TweetChanges/TweetChanges</string>
         </dict>
     </array>
 </dict>
