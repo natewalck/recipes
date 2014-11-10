@@ -43,7 +43,7 @@ class TweetChanges(Processor):
     __doc__ = description
 
 
-    def load_app_keys():
+    def load_app_keys(self):
         """Load app keys from a file on disk"""
         twitter_app_keys_path = os.path.expanduser('~/.twitter_app_keys')
         with open (twitter_app_keys_path) as f:
