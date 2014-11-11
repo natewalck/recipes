@@ -43,7 +43,7 @@ class TweetChanges(Processor):
 
     __doc__ = description
 
-    app_versions = 'app_versions.plist'
+    app_versions = '/Library/AutoPkg/app_versions.plist'
 
 
     def load_app_keys(self):
