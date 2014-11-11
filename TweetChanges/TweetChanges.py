@@ -66,7 +66,7 @@ class TweetChanges(Processor):
 
     def get_previous_app_version(self, app_name):
         app_history = self.load_app_versions()
-        if app_history and app_history[app_name]:
+        if app_history and app_name in app_history:
             return app_history[app_name]
         else:
             return False
